@@ -10,27 +10,21 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// STB_IMAGE
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-
-glm::vec2 cameraOffset = glm::vec2(0.0f);
 const GLint WIDTH = 800, HEIGHT = 600;
 glm::mat4 matrix = glm::mat4(1);
 
-bool pressW = false, pressA = false, pressS = false, pressD = false;
 
 class Sprite {
 public:
     GLuint VAO, VBO;
     GLuint textureID;
     GLuint shaderProgram;
-    int textureWidth = 0;
 
     glm::vec2 position;
     glm::vec2 scale;
@@ -62,37 +56,14 @@ public:
         glBindVertexArray(0);
     }
 
-    void drawTiled(const glm::mat4& proj, float cameraX) {
-        float posX = fmod(position.x, textureWidth);
-        if (posX > 0) posX -= textureWidth; 
-
-        for (int i = 0; i < 2; ++i) {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(posX + i * textureWidth, position.y, 0.0f));
-            model = glm::scale(model, glm::vec3(scale, 1.0f));
-
-            glUseProgram(shaderProgram);
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "proj"), 1, GL_FALSE, glm::value_ptr(proj));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "matrix"), 1, GL_FALSE, glm::value_ptr(model));
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textureID);
-            glUniform1i(glGetUniformLocation(shaderProgram, "basic_texture"), 0);
-
-            glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
-        }
-    }
-
     void setPosition(float x, float y) { position = glm::vec2(x, y); }
     void setScale(float sx, float sy) { scale = glm::vec2(sx, sy); }
     void setRotation(float angleDeg) { rotation = angleDeg; }
 
 private:
     void initGeometry() {
+
         float vertices[] = {
-            // Pos          // Color         // TexCoord
             -0.5f, -0.5f, 0, 1, 0, 0, 0.0f, 1.0f,
             -0.5f,  0.5f, 0, 0, 1, 0, 0.0f, 0.0f,
              0.5f,  0.5f, 0, 0, 0, 1, 1.0f, 0.0f,
@@ -126,7 +97,6 @@ private:
             std::cerr << "Erro ao carregar textura: " << path << std::endl;
             return;
         }
-        textureWidth = width;
 
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
@@ -140,7 +110,6 @@ private:
 
         stbi_image_free(data);
     }
-    
 };
 
 int main() {
@@ -165,8 +134,6 @@ int main() {
     }
 
     glfwMakeContextCurrent(window);
-
-    glfwSetKeyCallback(window, key_callback);
 
     // GLAD: carrega todos os ponteiros d funções da OpenGL
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -219,25 +186,21 @@ int main() {
 
     glm::mat4 proj = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f);
 
-    Sprite layer01(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer01_Ground.png");
-    layer01.setScale(1980, HEIGHT);
+    Sprite background(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/background.png");
+    background.setScale(WIDTH, HEIGHT);
+    background.setPosition(WIDTH / 2.0f, HEIGHT / 2.0f);
 
-    Sprite layer02(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer02_Trees.png");
-    layer02.setScale(1980, HEIGHT);
+    Sprite castle(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/castle.png");
+    castle.setScale(500, 300);
+    castle.setPosition(WIDTH / 3.0f, HEIGHT / 2.0f);
 
-    Sprite layer03(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer03_Hills_1.png");
-    layer03.setScale(1980, HEIGHT);
+    Sprite birds(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/birds.png");
+    birds.setScale(600, 300);
+    birds.setPosition(WIDTH / 2.0f, HEIGHT / 1.25f);
 
-
-    Sprite layer05(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer05_Clouds.png");
-    layer05.setScale(1980, HEIGHT);
-
-    Sprite layer07(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer07_Sky.png");
-    layer07.setScale(1980, HEIGHT);
-
-    Sprite plane(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/plane.png");
-    plane.setPosition(WIDTH / 2.0f, HEIGHT / 2.0f);
+    Sprite plane(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/plane.png");
     plane.setScale(150, 100);
+    plane.setPosition(WIDTH / 1.5f, HEIGHT / 3.0f);
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
@@ -253,26 +216,9 @@ int main() {
         glUniformMatrix4fv(glGetUniformLocation(shader_programme, "proj"), 1, GL_FALSE, glm::value_ptr(proj));
         glUniformMatrix4fv(glGetUniformLocation(shader_programme, "matrix"), 1, GL_FALSE, glm::value_ptr(matrix));
 
-        float speed = 200.0f * glfwGetTime(); 
-        glfwSetTime(0);  
-
-        if (pressA)
-            cameraOffset.x += speed;
-
-        if (pressD)
-            cameraOffset.x -= speed;
-
-        layer07.setPosition(WIDTH / 2.0f + cameraOffset.x * 0.1f, HEIGHT / 2.0f);
-        layer05.setPosition(WIDTH / 2.0f + cameraOffset.x * 0.2f, HEIGHT / 2.0f);
-        layer03.setPosition(WIDTH / 2.0f + cameraOffset.x * 0.4f, HEIGHT / 2.0f);
-        layer02.setPosition(WIDTH / 2.0f + cameraOffset.x * 0.7f, HEIGHT / 2.0f);
-        layer01.setPosition(WIDTH / 2.0f + cameraOffset.x * 1.0f, HEIGHT / 2.0f);
-
-        layer07.drawTiled(proj, cameraOffset.x);
-        layer05.drawTiled(proj, cameraOffset.x);
-        layer03.drawTiled(proj, cameraOffset.x);
-        layer02.drawTiled(proj, cameraOffset.x);
-        layer01.drawTiled(proj, cameraOffset.x);
+        background.draw(proj);
+        castle.draw(proj);
+        birds.draw(proj);
         plane.draw(proj);
 
         glfwSwapBuffers(window);
@@ -282,24 +228,3 @@ int main() {
     return EXIT_SUCCESS;
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-
-    if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-        pressA = true;
-    }
-    if (key == GLFW_KEY_A && action == GLFW_RELEASE) {
-        pressA = false;
-        glfwSetTime(0);
-    }
-
-    if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-        pressD = true;
-    }
-    if (key == GLFW_KEY_D && action == GLFW_RELEASE) {
-        pressD = false;
-        glfwSetTime(0);
-    }
-}
