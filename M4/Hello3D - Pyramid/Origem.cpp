@@ -186,19 +186,19 @@ int main() {
 
     glm::mat4 proj = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f);
 
-    Sprite background(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/background.png");
+    Sprite background(shader_programme, "../background.png");
     background.setScale(WIDTH, HEIGHT);
     background.setPosition(WIDTH / 2.0f, HEIGHT / 2.0f);
 
-    Sprite castle(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/castle.png");
+    Sprite castle(shader_programme, "../castle.png");
     castle.setScale(500, 300);
     castle.setPosition(WIDTH / 3.0f, HEIGHT / 2.0f);
 
-    Sprite birds(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/birds.png");
+    Sprite birds(shader_programme, "../birds.png");
     birds.setScale(600, 300);
     birds.setPosition(WIDTH / 2.0f, HEIGHT / 1.25f);
 
-    Sprite plane(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/M4/plane.png");
+    Sprite plane(shader_programme, "../plane.png");
     plane.setScale(150, 100);
     plane.setPosition(WIDTH / 1.5f, HEIGHT / 3.0f);
 

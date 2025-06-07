@@ -219,23 +219,23 @@ int main() {
 
     glm::mat4 proj = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f);
 
-    Sprite layer01(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer01_Ground.png");
+    Sprite layer01(shader_programme, "../layer01_Ground.png");
     layer01.setScale(1980, HEIGHT);
 
-    Sprite layer02(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer02_Trees.png");
+    Sprite layer02(shader_programme, "../layer02_Trees.png");
     layer02.setScale(1980, HEIGHT);
 
-    Sprite layer03(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer03_Hills_1.png");
+    Sprite layer03(shader_programme, "../layer03_Hills_1.png");
     layer03.setScale(1980, HEIGHT);
 
 
-    Sprite layer05(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer05_Clouds.png");
+    Sprite layer05(shader_programme, "../layer05_Clouds.png");
     layer05.setScale(1980, HEIGHT);
 
-    Sprite layer07(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/layer07_Sky.png");
+    Sprite layer07(shader_programme, "../layer07_Sky.png");
     layer07.setScale(1980, HEIGHT);
 
-    Sprite plane(shader_programme, "C:/Users/luizg/source/repos/PGVivencial/Vivencial2/plane.png");
+    Sprite plane(shader_programme, "../plane.png");
     plane.setPosition(WIDTH / 2.0f, HEIGHT / 2.0f);
     plane.setScale(150, 100);
 
