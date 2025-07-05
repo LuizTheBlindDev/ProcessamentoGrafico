@@ -6,23 +6,49 @@
 class DiamondView : public TilemapView {
 public:
     void computeDrawPosition(const int col, const int row, const float tw, const float th, float& targetx, float& targety) const override {
-        targetx = (col - row) * tw / 2.0f;
-        targety = (col + row) * th / 2.0f;
+        targetx = (col * tw / 2.0f) + (row * tw / 2.0f) ;
+        targety = (col * th / 2.0f) - (row * th / 2.0f) ;
     }
 
     void computeMouseMap(int& col, int& row, const float tw, const float th, const float mx, const float my) const override {
-        float cx = mx / (tw / 2.0f);
-        float cy = my / (th / 2.0f);
-        col = static_cast<int>((cy + cx) / 2.0f);
-        row = static_cast<int>((cy - cx) / 2.0f);
+        
+        float half_tw = tw / 2.0f;
+        float half_th = th / 2.0f;
+
+        col = ((mx / half_tw)/2.0f) + ((my / half_th) / 2.0f);
+        row = ((mx / half_tw)/2.0f) - ((my / half_th) / 2.0f);
     }
 
     void computeTileWalking(int& col, int& row, const int direction) const override {
         switch (direction) {
-        case 0: row--; break;           // NORTH
-        case 1: col++; break;           // EAST
-        case 2: row++; break;           // SOUTH
-        case 3: col--; break;           // WEST
+        case DIRECTION_NORTH:
+            col++;
+            row--;
+            break;
+        case DIRECTION_SOUTH:
+            col--;
+            row++;
+            break;
+        case DIRECTION_WEST:
+            col--;
+            row--;
+            break;
+        case DIRECTION_EAST:
+            col++;
+            row++;
+            break;
+        case DIRECTION_NORTHEAST:
+            col++;
+            break;
+        case DIRECTION_SOUTHEAST:
+            row++;
+            break;
+        case DIRECTION_SOUTHWEST:
+            col--;
+            break;
+        case DIRECTION_NORTHWEST:
+            row--;
+            break;
         }
     }
 };

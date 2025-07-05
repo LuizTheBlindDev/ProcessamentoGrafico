@@ -120,7 +120,6 @@ private:
     void loadTexture(const std::string& path) {
         int width, height, channels;
 
-        stbi_set_flip_vertically_on_load(true);
         unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 4);
         if (!data) {
             std::cerr << "Erro ao carregar textura: " << path << std::endl;
